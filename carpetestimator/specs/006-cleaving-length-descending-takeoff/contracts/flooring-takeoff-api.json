@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FlooringTakeoffAPIContract",
+  "description": "API Contract schema for FlooringTakeoffEngine",
+  "type": "object",
+  "properties": {
+    "FlooringTakeoffEngine": {
+      "type": "object",
+      "properties": {
+        "prepareSections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "width": { "type": "number" },
+              "length": { "type": "number" }
+            },
+            "required": ["id", "width", "length"]
+          }
+        },
+        "solve": {
+          "type": "object",
+          "properties": {
+            "totalLinearLength": { "type": "number" },
+            "totalSquareYards": { "type": "number" },
+            "placedCuts": { "type": "array" },
+            "activeRemnants": { "type": "array" }
+          }
+        }
+      }
+    }
+  }
+}

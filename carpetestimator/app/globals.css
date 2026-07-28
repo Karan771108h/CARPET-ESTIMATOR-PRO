@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: #f8fafc;
+  --bg-surface: #ffffff;
+  --text-primary: #0f172a;
+  --text-muted: #64748b;
+  --accent-primary: #2563eb;
+  --border-default: #e2e8f0;
+  --state-error: #dc2626;
+  --state-success: #16a34a;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+}

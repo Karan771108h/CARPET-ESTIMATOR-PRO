@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TakeoffEngineAPIContract",
+  "description": "API Contract schema for Spatial Optimization Takeoff Engine facade",
+  "type": "object",
+  "properties": {
+    "calculateEstimate": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "object",
+          "properties": {
+            "polygon": {
+              "type": "object",
+              "properties": {
+                "vertices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "x": { "type": "number" },
+                      "y": { "type": "number" }
+                    },
+                    "required": ["x", "y"]
+                  }
+                }
+              },
+              "required": ["vertices"]
+            },
+            "carpetSpec": {
+              "type": "object",
+              "properties": {
+                "rollWidth": { "type": "number" },
+                "patternType": { "type": "string", "enum": ["none", "straight", "half-drop"] },
+                "verticalRepeat": { "type": "number" },
+                "wasteFactorPercent": { "type": "number" },
+                "trimAllowance": { "type": "number" }
+              },
+              "required": ["rollWidth", "patternType", "verticalRepeat"]
+            }
+          },
+          "required": ["polygon", "carpetSpec"]
+        }
+      }
+    }
+  }
+}

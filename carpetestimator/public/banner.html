@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Carpet Estimator Pro Banner</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      width: 1280px;
+      height: 720px;
+      overflow: hidden;
+      background-color: #0b1329;
+    }
+
+    .banner-container {
+      width: 1280px;
+      height: 720px;
+      position: relative;
+      background: radial-gradient(circle at 75% 30%, #1e293b 0%, #0b132a 65%);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 48px 56px;
+      gap: 36px;
+      border: 1px solid #1e293b;
+    }
+
+    /* Grid Overlay Pattern */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(51, 65, 85, 0.2) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(51, 65, 85, 0.2) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    /* Glow Accents */
+    .blue-glow {
+      position: absolute;
+      top: -120px;
+      right: 15%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, rgba(11, 19, 42, 0) 70%);
+      pointer-events: none;
+    }
+
+    /* Left Column: Headline & Value Proposition */
+    .content-col {
+      flex: 1;
+      max-width: 480px;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid #3b82f6;
+      color: #60a5fa;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      width: fit-content;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #3b82f6;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #3b82f6;
+    }
+
+    .headline {
+      color: #ffffff;
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .headline span {
+      color: #3b82f6;
+    }
+
+    .subheadline {
+      color: #94a3b8;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.45;
+      margin-bottom: 28px;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-top: 1px solid #1e293b;
+      padding-top: 20px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .feature-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* Right Column: Multi-Screenshot Showcase Composition */
+    .visual-col {
+      flex: 1.35;
+      height: 620px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Card Base Frame */
+    .card-frame {
+      position: absolute;
+      background: #0f172a;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* 1. Main Web App Screenshot (Back Center/Left) */
+    .app-main-window {
+      width: 610px;
+      height: 480px;
+      top: 30px;
+      left: 10px;
+      z-index: 2;
+      border: 1px solid #475569;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+    }
+
+    .window-bar {
+      background: #1e293b;
+      height: 32px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .dot-r { background: #ef4444; }
+    .dot-y { background: #f59e0b; }
+    .dot-g { background: #10b981; }
+
+    .bar-title {
+      margin-left: 10px;
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .app-img-wrap {
+      width: 100%;
+      height: 448px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+
+    .app-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    /* 2. PDF Quote Document Screenshot (Overlapping Front Left) */
+    .pdf-quote-card {
+      width: 310px;
+      height: 410px;
+      bottom: 25px;
+      right: 230px;
+      z-index: 4;
+      border: 1px solid #64748b;
+      box-shadow: 
+        0 20px 35px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(59, 130, 246, 0.3);
+      transform: rotate(-3deg);
+    }
+
+    .pdf-header-bar {
+      background: #0f172a;
+      height: 28px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+
+    .pdf-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #38bdf8;
+      letter-spacing: 0.04em;
+    }
+
+    .pdf-img-wrap {
+      width: 100%;
+      height: 380px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .pdf-img-wrap img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    /* 3. Technical Appendix & Diagrams Screenshot (Overlapping Front Right) */
+    .pdf-tech-card {
+      width: 320px;
+      height: 400px;
+      bottom: 45px;
+      right: -10px;
+      z-index: 3;
+      border: 1px solid #475569;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.8);
+      transform: rotate(4deg);
+    }
+
+    .tech-header-bar {
+      background: #0f172a;
+      height: 28px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+    }
+
+    .tech-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #60a5fa;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner-container">
+    <div class="bg-grid"></div>
+    <div class="blue-glow"></div>
+
+    <!-- Left Column: Typography -->
+    <div class="content-col">
+      <div class="badge">
+        <div class="badge-dot"></div>
+        Trade Professional Suite
+      </div>
+      
+      <h1 class="headline">
+        CARPET ESTIMATOR <span>PRO</span>
+      </h1>
+      
+      <p class="subheadline">
+        Instant Broadloom Seam Layouts &amp; Material Takeoffs
+      </p>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">✓</div>
+          <span>Interactive 2D Roll Seam &amp; Cut Visualizer</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✓</div>
+          <span>Automated Remnant Nesting &amp; Waste Calculation</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✓</div>
+          <span>CRI 104/105 Standard Compliant Client Proposals</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Visual Showcase using all 3 User Screenshots -->
+    <div class="visual-col">
+      
+      <!-- Screenshot 1: Web App Takeoff Interface -->
+      <div class="card-frame app-main-window">
+        <div class="window-bar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span class="bar-title">Carpet Estimator Pro — Takeoff &amp; Seam Visualizer</span>
+        </div>
+        <div class="app-img-wrap">
+          <img src="/user_img1.png" alt="Carpet Estimator Pro Application Screen">
+        </div>
+      </div>
+
+      <!-- Screenshot 2: PDF Client Proposal -->
+      <div class="card-frame pdf-quote-card">
+        <div class="pdf-header-bar">
+          <span class="pdf-tag">📄 CLIENT PROPOSAL PDF</span>
+          <span style="font-size:9px; color:#64748b;">Quote #143220</span>
+        </div>
+        <div class="pdf-img-wrap">
+          <img src="/user_img2.png" alt="PDF Client Proposal Quote">
+        </div>
+      </div>
+
+      <!-- Screenshot 3: Technical Appendix & Nesting Diagram -->
+      <div class="card-frame pdf-tech-card">
+        <div class="tech-header-bar">
+          <span class="tech-tag">📐 TECHNICAL APPENDIX &amp; CUT DIAGRAM</span>
+        </div>
+        <div class="pdf-img-wrap">
+          <img src="/user_img3.png" alt="Technical Appendix Seam & Nesting Diagram">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>

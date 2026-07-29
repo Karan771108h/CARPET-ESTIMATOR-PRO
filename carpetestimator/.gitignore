@@ -41,3 +41,14 @@ yarn-error.log*
 *.tsbuildinfo
 tsconfig.tsbuildinfo
 next-env.d.ts
+
+# dev/AI workflow — not needed in production
+/specs
+/__tests__
+/context
+/.gemini
+/.specify
+/.vscode
+AGENTS.md
+CLAUDE.md
+proxy.ts

@@ -1,0 +1,3 @@
+# Root-level dev/AI files — not needed for Vercel deployment
+.agents/
+assets/

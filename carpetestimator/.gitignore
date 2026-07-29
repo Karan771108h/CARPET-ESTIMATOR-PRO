@@ -49,6 +49,8 @@ next-env.d.ts
 /.gemini
 /.specify
 /.vscode
+/.github/agents
+/.github/prompts
 AGENTS.md
 CLAUDE.md
 proxy.ts

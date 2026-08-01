@@ -12,6 +12,12 @@ import { LicenseModal } from '../auth/LicenseModal';
 import { ProposalPDF } from '../pdf/ProposalPDF';
 import { generatePDFFromDOM } from '../../lib/pdf/generate';
 import { ShieldCheck, HardHat, Calculator, ArrowLeft, LogOut } from 'lucide-react';
+import { BrandingForm } from './BrandingForm';
+import {
+  ContractorBranding, ClientDetails, PricingInputs,
+  DEFAULT_BRANDING, DEFAULT_CLIENT, DEFAULT_PRICING,
+  loadBranding, loadClient, loadPricing,
+} from '../../lib/types/branding';
 
 export const EstimatorDashboard: React.FC<{ serverIsLicensed: boolean }> = ({ serverIsLicensed }) => {
   // Default Initial Room State
@@ -41,6 +47,17 @@ export const EstimatorDashboard: React.FC<{ serverIsLicensed: boolean }> = ({ se
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(serverIsLicensed);
   const [isLicenseModalOpen, setIsLicenseModalOpen] = useState<boolean>(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
+
+  // Branding / client / pricing — loaded from localStorage on mount
+  const [branding, setBranding] = useState<ContractorBranding>(DEFAULT_BRANDING);
+  const [clientDetails, setClientDetails] = useState<ClientDetails>(DEFAULT_CLIENT);
+  const [pricing, setPricing] = useState<PricingInputs>(DEFAULT_PRICING);
+
+  React.useEffect(() => {
+    setBranding(loadBranding());
+    setClientDetails(loadClient());
+    setPricing(loadPricing());
+  }, []);
 
   // Pure Math Calculation derived only when Calculate button is clicked
   const result = useMemo(() => {
@@ -146,6 +163,15 @@ export const EstimatorDashboard: React.FC<{ serverIsLicensed: boolean }> = ({ se
           <div className="lg:col-span-5 space-y-6">
             <RoomForm room={room} onChange={setRoom} />
             <CarpetForm carpetSpec={carpetSpec} unit={room.unit} onChange={setCarpetSpec} />
+            <BrandingForm
+              branding={branding}
+              clientDetails={clientDetails}
+              pricing={pricing}
+              onBrandingChange={setBranding}
+              onClientChange={setClientDetails}
+              onPricingChange={setPricing}
+              unit={room.unit}
+            />
 
             {/* Prominent Calculate Button */}
             <button
@@ -193,7 +219,15 @@ export const EstimatorDashboard: React.FC<{ serverIsLicensed: boolean }> = ({ se
       {/* Off-screen PDF template — only rendered when licensed to avoid wasted render */}
       {isAuthenticated && (
         <div className="hidden">
-          <ProposalPDF id="pdf-proposal-template" room={room} carpetSpec={carpetSpec} result={result} />
+          <ProposalPDF
+            id="pdf-proposal-template"
+            room={room}
+            carpetSpec={carpetSpec}
+            result={result}
+            branding={branding}
+            clientDetails={clientDetails}
+            pricing={pricing}
+          />
         </div>
       )}
     </div>

@@ -1,12 +1,14 @@
 'use client';
 
 import React from 'react';
-import { Room } from '../../lib/types/estimation';
+import { Room, PatternMatchType } from '../../lib/types/estimation';
 import { Lock, Eye, Download } from 'lucide-react';
 
 interface SeamDiagramVisualizerProps {
   room: Room;
   rollWidth: number;
+  patternType?: PatternMatchType;
+  verticalRepeat?: number;
   isLicensed?: boolean;
   onExportClick?: () => void;
 }
@@ -14,6 +16,8 @@ interface SeamDiagramVisualizerProps {
 export const SeamDiagramVisualizer: React.FC<SeamDiagramVisualizerProps> = ({
   room,
   rollWidth,
+  patternType = 'none',
+  verticalRepeat = 0,
   isLicensed = false,
   onExportClick,
 }) => {
@@ -115,6 +119,17 @@ export const SeamDiagramVisualizer: React.FC<SeamDiagramVisualizerProps> = ({
             const remainderWidth = rWidth > 0 ? Number((rect.width % rWidth).toFixed(2)) : 0;
             const hasSeams = rect.width > rWidth + 1e-7 && fullStripsCount > 0;
 
+            // Pattern repeat line positions along strip height
+            const repeatLinesPx: number[] = [];
+            if (patternType !== 'none' && verticalRepeat > 0) {
+              const pxPerFt = hPx / rect.length;
+              let y = verticalRepeat * pxPerFt;
+              while (y < hPx - 2) {
+                repeatLinesPx.push(y);
+                y += verticalRepeat * pxPerFt;
+              }
+            }
+
             const partStrips: Array<{ name: string; width: number; xStart: number; wPx: number }> = [];
 
             if (hasSeams) {
@@ -148,11 +163,26 @@ export const SeamDiagramVisualizer: React.FC<SeamDiagramVisualizerProps> = ({
                   y={RECT_Y}
                   width={wPx}
                   height={hPx}
-                  fill="#1e293b"
+                  fill={patternType === 'half-drop' ? '#1e1a2e' : patternType === 'straight' ? '#0f1e2e' : '#1e293b'}
                   stroke="#3b82f6"
                   strokeWidth="2"
                   rx="4"
                 />
+
+                {/* Pattern repeat lines */}
+                {repeatLinesPx.map((ry, ri) => (
+                  <line
+                    key={`repeat-${ri}`}
+                    x1={x0 + 2}
+                    y1={RECT_Y + ry}
+                    x2={x0 + wPx - 2}
+                    y2={RECT_Y + ry + (patternType === 'half-drop' && ri % 2 === 0 ? -4 : 0)}
+                    stroke={patternType === 'half-drop' ? '#f59e0b' : '#22d3ee'}
+                    strokeWidth="1"
+                    strokeDasharray="3 2"
+                    opacity="0.7"
+                  />
+                ))}
 
                 {/* Sliced Strips Shading */}
                 {partStrips.map((p, pIdx) => (

@@ -100,7 +100,9 @@ export function calculateEstimate(
     const engine = new FlooringTakeoffEngine(
       carpetSpec.rollWidth,
       carpetSpec.trimAllowance ?? 0.25,
-      carpetSpec.wasteFactorPercent ?? 0
+      carpetSpec.wasteFactorPercent ?? 0,
+      carpetSpec.patternType ?? 'none',
+      carpetSpec.verticalRepeat ?? 0
     );
 
     engine.prepareSections(
@@ -112,7 +114,8 @@ export function calculateEstimate(
     );
 
     nestingResult = engine.solve();
-    twoStageResult = engine.buildTwoStageResult(nestingResult, netFloorArea, totalPerimeter);
+    const roomLength = room.unit === 'imperial' ? areaResult.maxLengthFt : areaResult.maxLengthM;
+    twoStageResult = engine.buildTwoStageResult(nestingResult, netFloorArea, totalPerimeter, roomLength);
   }
 
   // -----------------------------------------------------------------------

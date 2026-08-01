@@ -124,10 +124,10 @@ export async function generatePDFFromDOM(elementId: string, filename: string): P
       ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
       ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
 
-      const sliceData    = sliceCanvas.toDataURL('image/png');
+      const sliceData    = sliceCanvas.toDataURL('image/jpeg', 0.98);
       const sliceHMm     = srcH / pxPerMm;
       // Place with margins: content starts at (MARGIN_X, MARGIN_Y)
-      pdf.addImage(sliceData, 'PNG', MARGIN_X, MARGIN_Y, CONTENT_W, sliceHMm);
+      pdf.addImage(sliceData, 'JPEG', MARGIN_X, MARGIN_Y, CONTENT_W, sliceHMm);
     }
 
     pdf.save(filename);

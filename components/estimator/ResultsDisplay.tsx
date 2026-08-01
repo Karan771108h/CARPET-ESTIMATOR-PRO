@@ -7,6 +7,13 @@ import { Calculator, Grid, Package, Ruler, ShieldCheck, FileText, CheckCircle2, 
 import { PRICING_TIERS } from '../../lib/constants';
 import { SeamDiagramVisualizer } from './SeamDiagramVisualizer';
 
+function fmt(n: number, decimals = 1): string {
+  return Number(n.toFixed(decimals)).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: decimals });
+}
+function plural(n: number, unit: string): string {
+  return `${n} ${unit}${n === 1 ? '' : 's'}`;
+}
+
 interface ResultsDisplayProps {
   room: Room;
   carpetSpec: CarpetSpec;
@@ -79,14 +86,14 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </div>
           <div className="flex items-baseline gap-1.5">
             <span className="text-2xl sm:text-3xl font-black font-mono text-slate-900">
-              {isImperial ? result.netAreaSqFt : result.netAreaSqM}
+              {isImperial ? fmt(result.netAreaSqFt) : fmt(result.netAreaSqM)}
             </span>
             <span className="text-xs font-bold text-slate-600">
               {isImperial ? 'sq ft' : 'm²'}
             </span>
           </div>
           <div className="text-[11px] text-slate-400 font-mono mt-1">
-            ({isImperial ? `${result.netAreaSqYd} sq yd` : `${result.netAreaSqFt} sq ft`})
+            ({isImperial ? `${fmt(result.netAreaSqYd)} sq yd` : `${fmt(result.netAreaSqFt)} sq ft`})
           </div>
         </div>
 
@@ -97,12 +104,12 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </div>
           <div className="flex items-baseline gap-1.5">
             <span className="text-2xl sm:text-3xl font-black font-mono tracking-tight">
-              {mainOrderedAmount}
+              {fmt(mainOrderedAmount)}
             </span>
             <span className="text-sm font-semibold text-blue-100">{areaUnitLabel}</span>
           </div>
           <div className="text-[11px] text-blue-200 font-mono mt-1">
-            Includes waste ({isImperial ? `${result.totalLinearFt} lin ft` : `${result.totalLinearM} m`})
+            Includes waste ({isImperial ? `${fmt(result.totalLinearFt)} lin ft` : `${fmt(result.totalLinearM)} m`})
           </div>
         </div>
 
@@ -115,15 +122,15 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <div className="space-y-1 font-mono text-xs text-slate-700">
             <div className="flex justify-between">
               <span className="text-slate-500 font-sans">Pad:</span>
-              <span className="font-bold text-slate-900">{result.accessories.padAreaRequired} {isImperial ? 'sq ft' : 'm²'}</span>
+              <span className="font-bold text-slate-900">{fmt(result.accessories.padAreaRequired)} {isImperial ? 'sq ft' : 'm²'} ({plural(result.accessories.padRollsNeeded ?? 1, 'roll')})</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 font-sans">Tackless:</span>
-              <span className="font-bold text-slate-900">{result.accessories.tacklessStripsLinear} {linearUnitLabel}</span>
+              <span className="font-bold text-slate-900">{fmt(result.accessories.tacklessStripsLinear)} {linearUnitLabel}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 font-sans">Seam Tape:</span>
-              <span className="font-bold text-slate-900">{result.accessories.seamTapeLinear} {linearUnitLabel}</span>
+              <span className="font-bold text-slate-900">{fmt(result.accessories.seamTapeLinear)} {linearUnitLabel}</span>
             </div>
           </div>
         </div>
@@ -133,6 +140,8 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
       <SeamDiagramVisualizer
         room={room}
         rollWidth={carpetSpec.rollWidth}
+        patternType={carpetSpec.patternType}
+        verticalRepeat={carpetSpec.verticalRepeat}
         isLicensed={isLicensed}
         onExportClick={isLicensed && onGeneratePDF ? onGeneratePDF : onUnlockClick}
       />
@@ -267,7 +276,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 Matched Cut Length
               </div>
               <div className="text-2xl font-bold font-mono text-slate-900">
-                {mainCutLength}
+                {fmt(mainCutLength)}
               </div>
               <div className="text-[11px] text-slate-500 font-mono mt-0.5">
                 per strip ({isImperial ? 'ft' : 'm'})
@@ -291,11 +300,11 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                       Strip #{s.stripIndex}
                     </span>
                     <span>
-                      Cut: {isImperial ? `${s.matchedLength} ft` : `${s.matchedLength} m`}
+                      Cut: {isImperial ? `${fmt(s.matchedLength)} ft` : `${fmt(s.matchedLength)} m`}
                     </span>
                     {s.offset > 0 ? (
                       <span className="text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[10px] font-semibold">
-                        Offset: +{s.offset}
+                        Offset: +{fmt(s.offset)}
                       </span>
                     ) : (
                       <span className="text-slate-400 text-[10px]">Straight</span>

@@ -5,15 +5,25 @@ export class FlooringTakeoffEngine {
   private rollWidth: number;
   private bleed: number;
   private wasteFactorPercent: number;
+  private patternType: string;
+  private verticalRepeat: number;
   private pieces: Piece[] = [];
   private remnants: EngineRemnant[] = [];
   private placedCuts: PlacedCut[] = [];
   private currentRollLength: number = 0;
 
-  constructor(rollWidth: number = 15.0, bleed: number = 0.25, wasteFactorPercent: number = 0) {
+  constructor(
+    rollWidth: number = 15.0,
+    bleed: number = 0.25,
+    wasteFactorPercent: number = 0,
+    patternType: string = 'none',
+    verticalRepeat: number = 0
+  ) {
     this.rollWidth = rollWidth;
     this.bleed = bleed;
     this.wasteFactorPercent = wasteFactorPercent;
+    this.patternType = patternType;
+    this.verticalRepeat = verticalRepeat;
   }
 
   /**
@@ -25,8 +35,26 @@ export class FlooringTakeoffEngine {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     this.pieces = [];
 
+    let stripIndex = 0; // Track strip index for half-drop alternating offset
+
     for (const section of sections) {
       const rawLengthWithTrim = section.length + 2 * this.bleed;
+      let matchedCutLength = rawLengthWithTrim;
+
+      if (this.verticalRepeat > 0 && this.patternType !== 'none') {
+        if (this.patternType === 'straight') {
+          const repeatsNeeded = Math.ceil(rawLengthWithTrim / this.verticalRepeat);
+          matchedCutLength = repeatsNeeded * this.verticalRepeat;
+        } else if (this.patternType === 'half-drop') {
+          const repeatsNeeded = Math.ceil(rawLengthWithTrim / this.verticalRepeat);
+          // Half-drop alternates offset, but to be safe for nesting, each piece takes the max potential length
+          // or we use the stripIndex to alternate.
+          matchedCutLength = repeatsNeeded * this.verticalRepeat + (0.5 * this.verticalRepeat);
+        }
+      }
+
+      // Ensure precision
+      matchedCutLength = Number(matchedCutLength.toFixed(4));
 
       if (section.width > this.rollWidth + 1e-7) {
         // Section wider than roll — cleave into parallel strips
@@ -39,10 +67,11 @@ export class FlooringTakeoffEngine {
           this.pieces.push({
             id: `${section.id} Part ${partLabel}`,
             width: this.rollWidth,
-            length: Number(rawLengthWithTrim.toFixed(4)),
+            length: matchedCutLength,
             isPlaced: false,
           });
           partIndex++;
+          stripIndex++;
         }
 
         if (remainderWidth > 0.1) {
@@ -50,18 +79,20 @@ export class FlooringTakeoffEngine {
           this.pieces.push({
             id: `${section.id} Part ${partLabel}`,
             width: Number(remainderWidth.toFixed(4)),
-            length: Number(rawLengthWithTrim.toFixed(4)),
+            length: matchedCutLength,
             isPlaced: false,
           });
+          stripIndex++;
         }
       } else {
         // Section fits within roll width — single piece
         this.pieces.push({
           id: section.id,
           width: section.width,
-          length: Number(rawLengthWithTrim.toFixed(4)),
+          length: matchedCutLength,
           isPlaced: false,
         });
+        stripIndex++;
       }
     }
   }
@@ -163,7 +194,8 @@ export class FlooringTakeoffEngine {
   public buildTwoStageResult(
     nestingResult: NestingResult,
     netFloorArea: number,
-    totalPerimeter: number
+    totalPerimeter: number,
+    roomLength: number = 0
   ): TwoStageOptimizationResult {
     const placements: ItemPlacement[] = [];
     const masterRollCuts: MasterRollCut[] = [];
@@ -262,11 +294,15 @@ export class FlooringTakeoffEngine {
       pileAngle: 0,
     }));
 
+    // Seam count = fresh cuts that are side-by-side (not nested)
+    // Seam tape runs along room length (pile direction), not total linear
+    const seamCount = Math.max(0, freshCuts.length - 1);
+    const seamRoomLength = roomLength > 0 ? roomLength : (freshCuts[0]?.length ?? 0);
     const accessories = calculateAccessories(
       netFloorArea,
       totalPerimeter,
-      totalLinear,
-      freshCuts.length
+      seamRoomLength,
+      seamCount + 1  // stripsRequired equiv
     );
 
     return {
